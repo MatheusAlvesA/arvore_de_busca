@@ -3,6 +3,25 @@
 Arvore::Arvore(int c, std::string d) {
 	this->chave = c; // configura a chave inicial
 	this->dados = d; // configura o primeiro dado para armazenar
+	this->r = this->l = nullptr;
+}
+Arvore::~Arvore() {
+ if(this->l != nullptr) this->destruir(this->l);
+ if(this->r != nullptr) this->destruir(this->r);
+}
+void Arvore::destruir(Arvore *arvore) {
+  if(arvore->l == nullptr && arvore->r == nullptr) delete arvore; // caso base
+  else {
+     if(arvore->l != nullptr) { // esquerda não pode ser deletada por que não ta vazia
+       this->destruir(arvore->l); // recursivamente deleta a esquerda
+       arvore->l = nullptr;
+     }
+     if(arvore->r != nullptr) { // repete o processo par a direita da arvore
+       this->destruir(arvore->r);
+       arvore->r = nullptr;
+     }
+     delete arvore; // nesse ponto os dois lados da arvore já foram esvaziados
+  }
 }
 
 bool Arvore::inserir(int c, std::string d) {
@@ -38,5 +57,19 @@ std::string Arvore::get(int &c) {
             c = -1;
 		   return NULL; // se não estiver ocupado então chegou al dead end
 		} 
+	}
+}
+
+void Arvore::remover(int &c) {
+	if(c == this->chave) {
+		
+	}
+	if(c > this->chave) { // caso essa chave seja maior que a atual então va para a direita na arvore
+		if(this->r != nullptr) this->r->get(c); // caso o lado direito esteja ocupado repita recursivamente
+		else c = -1;  
+	}
+	else {
+		if(this->l != nullptr) this->l->get(c); // caso o lado esquerdo esteja ocupado repita recursivamente
+		else c = -1; 
 	}
 }
