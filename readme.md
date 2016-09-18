@@ -1,12 +1,12 @@
 #Arvore de Busca Binaria
 
- - Altor:
+ - Autor:
 
  Matheus Alves de Andrade
 
-Esse algoritmo implemneta uma estrutura de dado conhecida como arvore de busca
-de forma bem simples a arvore apenas possui os campode de chave e dados sendo
-a chave: um int e os dados: uma string;
+Esse algoritmo implementa uma estrutura de dado conhecida como arvore de busca,
+de forma bem simples a arvore apenas possui os campos de de chave e dados sendo
+a chave: um int e o dado: uma string;
 
 ##Implementação
 
@@ -17,12 +17,12 @@ da arvore de buaca...
 Coloca novos dados 
  - get
 
-retorna um dado a partir da chave
+Retorna um dado a partir da chave
  - remover
 
 Remove a partir da chave um elemento armazenado na arvore
 
- - construtor e destrutor
+ - Construtor e Destrutor
 
 São responsávei por setar os valores iniciais e liberar a memoria alocada, respectivamente
 
