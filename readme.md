@@ -7,6 +7,15 @@
 Esse algoritmo implementa uma estrutura de dado conhecida como arvore de busca,
 de forma bem simples a arvore apenas possui os campos de de chave e dados sendo
 a chave: um int e o dado: uma string;
+A forma como escolhi implementar essa arvore pode ser considerada "diferente".
+Na minha implementação cada nó da arvore é também uma arvore, sendo assim
+quando inserimos um elemento é executado o comando new Arvore(chave, valor)
+isso implica em algumas diferenças, são elas:
+A arvore possui um atributo bool root que guarda se essa arvore é a raiz ou se
+ela possui um pai acima dela.
+A arvore só deleta recursivamente os elementos abaixo dela se ela for uma raiz
+caso contrario qualquer remoção de elemento acarretaria a remoção de todos
+os elementos abaixo dele.
 
 ##Implementação
 
@@ -27,4 +36,5 @@ Remove a partir da chave um elemento armazenado na arvore
 São responsávei por setar os valores iniciais e liberar a memoria alocada, respectivamente
 
 ##Observação...
- O código está incompleto e ainda precisa ser melhorado, verção 0.5 iniciada em 17 de setembro de 2016
+ O código está incompleto e ainda precisa ser melhorado, versão 0.5 iniciada em 17 de setembro de 2016
+ versão 1.0, falta os incrementos
