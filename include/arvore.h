@@ -16,7 +16,9 @@ class Arvore {
     void destruir(Arvore *arvore); // destroi a avore liberando a memória
     void operator=(Arvore *b); // sobrecarga do operador = para copiar arvores facilmente
     int _enesimoElemento(int &n); // função auxiliar a função de enesimo elemento
-    //bool _posicao(int x, int &n); // função auxiliar a função posição
+    bool _posicao(int x, int &n); // função auxiliar a função posição
+    void toVetor(int *v, int &n); // converte a arvore em um vetor
+    void _toString(std::ostringstream *stream, Arvore *L, Arvore *R); // função auxiliar da toString();
     
   public:
     Arvore(int c); // inicializa a arvore
@@ -27,12 +29,13 @@ class Arvore {
     bool remover(int c); // remove um galho da arvore, reorganizando os outros e retorna false caso não tenha achado o elemento
     void remover_auxiliar(int c, Arvore *&ptr_P, Arvore *&ptr_F); // função recursiva que encontra o nó e seu antecessor
     // funções adicionais
-   // std::string toString (); // retorna uma String que contém a sequência de visitação (percorrimento) da ABB por nível.
+        std::string toString (); // retorna uma String que contém a sequência de visitação (percorrimento) da ABB por nível.
     int getAbaixo() {return this->abaixo;} // retorna quantos elementos exitem a direita e esquerda dessa arvore
     bool ehCheia(); // retorna verdadeiro se a ABB for uma árvore binária cheia e falso, caso contrário.
     bool ehCompleta(); // retorna verdadeiro se a ABB for uma árvore binária completa e falso, caso contrário.
     int enesimoElemento (int &n); //retorna o n-ésimo elemento (contando a partir de 1) do percurso em ordem (ordem simétrica) da ABB.
-    //int posicao(int x); // retorna a posição ocupada pelo elemento x em um percurso em ordem simétrica na ABB (contando a partir de 1).
+    int posicao(int x); // retorna a posição ocupada pelo elemento x em um percurso em ordem simétrica na ABB (contando a partir de 1).
+    int mediana (); //retorna o elemento que contém a mediana da ABB. Se a ABB possuir um número par de elementos, retorne o menor dentre os dois elementos medianos.
 };
 
 #endif

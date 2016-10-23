@@ -261,7 +261,7 @@ int Arvore::_enesimoElemento(int &n) {
 
 	return retorno;
 }
-/*
+
 int Arvore::posicao (int x) {
 	int n = 1;
 	this->get(x);
@@ -272,7 +272,7 @@ int Arvore::posicao (int x) {
 
 bool Arvore::_posicao(int x, int &n) {
 	bool retorno = false;
-	std::cout << "Entrou em " << this->chave << " com " << n << std::endl;
+
 	if(this->l != nullptr && this->l->chave == x) {
 		n++;
 		retorno = true;
@@ -288,26 +288,54 @@ bool Arvore::_posicao(int x, int &n) {
 		n++;
 		retorno = true;
 	}
-	else if(!retorno && this->r != nullptr) retorno = this->l->_posicao(x, ++n);;
+	else if(!retorno && this->r != nullptr) retorno = this->r->_posicao(x, ++n);
 
 	return retorno;
 }
 
+int Arvore::mediana() {
+	int *vetor = new int[this->abaixo+1]; // um vetor com o número de elementos da arvore
+	int mediana; // o valor da mediana a ser calculado
+	int n = -1;
+	this->toVetor(vetor, n); // convertendo a arvore em vetor
+
+	mediana = vetor[n/2]; // a mediana é o valor do meio uma vez que esse vetor está ordenado
+
+	delete[] vetor; // deletando para evitar vazamento de memória
+	return mediana; // retornando a mediana
+}
+
+void Arvore::toVetor(int *v, int &n) {
+	if(this->l != nullptr) this->l->toVetor(v, ++n); // visita primeiro a esquerda
+	v[n] = this->chave; // recolhe o elemento mais a esquerda
+	if(this->r != nullptr) this->r->toVetor(v, ++n); // só então visita a direita
+}
+
+
 std::string Arvore::toString() {
-	std::ostringstream retorno; // usando ostringstream para facilitar a formatação
-	//Arvore *esquerda = this->l;
-	//Arvore *direita = this->r;
+	std::ostringstream *retorno = new std::ostringstream();; // usando ostringstream para facilitar a formatação
+	std::string string;
+	Arvore *esquerda = this->l;
+	Arvore *direita = this->r;
 
-	retorno << "\n###Arvore Binária de Busca enraizada em " << this->chave << "###\n";
-	retorno << this->chave << std::endl;
+	*retorno << "\n";
+	*retorno << "|" << this->chave << "|\n";
+	this->_toString(retorno, esquerda, direita);
+	*retorno << "\n\n";
 
-	retorno << "Essa arvore tem " << this->abaixo+1 << " elementos.\n";
+	string = retorno->str();
+	delete retorno;
+	return string;
+}
 
-	if(this->ehCheia()) retorno << "Essa arvore é cheia.\n";
-	else retorno << "Essa arvore não é cheia.\n";
+void Arvore::_toString(std::ostringstream *stream, Arvore *L, Arvore *R) {
+	*stream << "\n";
+	
+	if(L != nullptr) *stream << "|" << L->chave << "|";
+	else *stream << "|E|";
+	if(R != nullptr) *stream << "|" << R->chave << "|";
+	else *stream << "|E|";
 
-	if(this->ehCompleta()) retorno << "Essa arvore é completa.\n";
-	else retorno << "Essa arvore não é completa.\n";
-
-	return retorno.str();
-}*/
+	if(L != nullptr) this->_toString(stream, L->l, L->r);
+	if(R != nullptr) this->_toString(stream, R->l, R->r);
+}

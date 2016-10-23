@@ -47,10 +47,61 @@ Retorna se a arvore é cheia
 
 Retorna o enesimo elemento no percurso de ordem simétrica
 
+ - toString()
+
+Retorna uma string contendo a arvore
+
+ - mediana()
+
+ Retorna calor mediano da arvore
+
+ - enesimoElemento(int)
+
+ Retorna qual é o enesimo elemento em um percurso de ordem simétrica
+
+  - posicao(int)
+
+ Retorna qual é a posição do elemento buscado quando procurado em umpercurso de ordem simétrica
+
+##Como Compilar
+Esse algoritmo foi desenvolvido em C++ no sistema Ubuntu, para compilar está disponível um arquivo makefile então apenas execute o comando make.
+ Se preferir pode executar o comando de compilação: g++ -Wall -std=c++11 testes.cpp src/arvore.cpp -I include/ -o bin/arvore
+ 
+ O arquivo binário estará disponível na asta bin/ ao final da compilação.
+
+##Como Usar
+Execute o programa via linha de comando do terminal linux e passe por parâmetro os arquivos contendo as inserções na arvore e os comandos.
+
+ - Por exemplo
+ ./bin/arvore inserts.txt comandos.txt
+
+ O formato do arquivo inserts.txt deve ser:
+
+ ... 0 1 2 3 4 5 6 7 8 9 10 42 2016 ...
+
+ Já o arquivo comandos.txt deve ser:
+
+ENESIMO N
+
+POSICAO N
+
+MEDIANA
+
+CHEIA
+
+COMPLETA
+
+IMPRIMA
+
+REMOVA N
+
+Onde N é um valor inteiro
+
 ##Observação...
  O código está incompleto e ainda precisa ser melhorado, versão 0.5 iniciada em 17 de setembro de 2016
  
   versão 1.0, falta os incrementos
 
-  versão 1.5 funções extras adicionadas ara enesimo e descrobrir se é cheia ou completa.
+  versão 1.5 funções extras adicionadas para enesimo e descrobrir se é cheia ou completa.
 
+  versão 1.9 quase tudo pronto, mas o toString não funciona corretamente. O algoritmo precisa de mais testes
