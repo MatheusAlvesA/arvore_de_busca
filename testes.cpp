@@ -7,18 +7,24 @@ int main() {
  Arvore arvore(5, "Rais principal");
  std::string retorno;
 
- arvore.inserir(1, "Numero 1");
- arvore.inserir(2, "Numero 2");
- arvore.inserir(3, "Numero 3");
- arvore.inserir(4, "Numero 4");
- arvore.inserir(7, "Numero 7");
- arvore.inserir(6, "Numero 6");
- arvore.inserir(8, "Numero 8");
- arvore.inserir(9, "Numero 9");
+ arvore.inserir(1);
+ arvore.inserir(2);
+ arvore.inserir(3);
+ arvore.inserir(4);
+ arvore.inserir(7);
+ arvore.inserir(6);
+ arvore.inserir(8);
+ arvore.inserir(9);
 
  mostrar(&arvore, 1, 9);
 
  std::cout << "__________________________________________\n";
+
+int n = 3;
+std::cout << "Percurso simétrico de n = " << 3 << ". resultado: " << arvore.enesimoElemento(n) << std::endl;
+n = 7;
+std::cout << "Percurso simétrico de n = " << 7 << ". resultado: " << arvore.enesimoElemento(n) << std::endl;
+
  if(arvore.remover(5)) std::cout << "sucesso na remoção\n";
 else std::cout << "falha na remoção\n";
 if(arvore.remover(6)) std::cout << "sucesso na remoção\n";
@@ -32,12 +38,10 @@ else std::cout << "falha na remoção\n";
 }
 
 void mostrar(Arvore *arvore, int inicio, int fim) {
-  std::string retorno = "";
-
   for(int buscando = inicio; inicio <= fim; inicio++) {
     buscando = inicio;
-    retorno = arvore->get(buscando);
+    buscando = arvore->get(buscando);
     if(buscando == -1) std::cout << "Erro, não foi encontrada a chave " << inicio <<"\n";
-    else std::cout << "Chave: " << inicio << ". conteudo:  " << retorno << "\n";
+    else std::cout << "Chave: " << inicio << " OK, tem " << arvore->getAbaixo() << " de elementos abaixo" << "\n";
   }
 }

@@ -1,17 +1,17 @@
 #include "arvore.h"
 
-Arvore::Arvore(int c, std::string d) {
+Arvore::Arvore(int c) {
 	this->chave = c; // configura a chave inicial
-	this->dados = d; // configura o primeiro dado para armazenar
 	this->r = this->l = nullptr;
 	this->root = true;
+	this->abaixo = 0;
 }
 
-Arvore::Arvore(int c, std::string d, bool isroot) {
+Arvore::Arvore(int c, bool isroot) {
 	this->chave = c; // configura a chave inicial
-	this->dados = d; // configura o primeiro dado para armazenar
 	this->r = this->l = nullptr;
 	this->root = isroot;
+	this->abaixo = 0;
 }
 
 Arvore::~Arvore() {
@@ -38,44 +38,51 @@ void Arvore::destruir(Arvore *arvore) {
 // essa função copia totalmente os elementos de uma arvore para outra
 void Arvore::operator=(Arvore *b) {
 	this->chave = b->chave;
-	this->dados = b->dados;
 	this->l = b->l;
 	this->r = b->r;
 	this->root = b->root;
 }
 
-bool Arvore::inserir(int c, std::string d) {
+bool Arvore::inserir(int c) {
 	if(c == this->chave) return false; // não é nescesário inserir, pois já existe
 	if(c > this->chave) { // caso essa chave seja maior que a atual então va para a direita na arvore
-		if(this->r != nullptr) return this->r->inserir(c, d); // caso o lado direito esteja ocupado repita recursivamente
+		if(this->r != nullptr) {  // caso o lado direito esteja ocupado repita recursivamente
+			bool retorno = this->r->inserir(c);
+			if(retorno) this->abaixo++;
+			return retorno;
+		}
 		else { // se não estiver ocupado encontramos onde colocar
-			this->r = new Arvore(c, d, false); // colocando o novo dado, note que essa arvore não é a raiz
+			this->abaixo++;
+			this->r = new Arvore(c, false); // colocando o novo dado, note que essa arvore não é a raiz
 			return true; // retornando com sucesso
 		}
 	}
 	else {
-		if(this->l != nullptr) return this->l->inserir(c, d); // caso o lado esquerdo esteja ocupado repita recursivamente
+		if(this->l != nullptr) { // caso o lado esquerdo esteja ocupado repita recursivamente
+			bool retorno = this->l->inserir(c);
+			if(retorno) this->abaixo++;
+			return retorno;
+		}
 		else { // se não estiver ocupado encontramos onde colocar
-			this->l = new Arvore(c, d, false); // colocando o novo dado, note que essa arvore não é a raiz
+			this->abaixo++;
+			this->l = new Arvore(c, false); // colocando o novo dado, note que essa arvore não é a raiz
 			return true; // retornando com sucesso
 		}
 	}
 }
 
-std::string Arvore::get(int &c) {
-	if(c == this->chave) return this->dados; // Caso base, encontrou o dado
+int Arvore::get(int c) {
+	if(c == this->chave) return this->chave; // Caso base, encontrou o dado
 	if(c > this->chave) { // caso essa chave seja maior que a atual então va para a direita na arvore
 		if(this->r != nullptr) return this->r->get(c); // caso o lado direito esteja ocupado repita recursivamente
 		else { // se não possuir mais caminho então não pode mais continuar}
-            c = -1;
-		    return ""; // se não estiver ocupado então chegou no dead end
+            return -1;
 		}  
 	}
 	else {
 		if(this->l != nullptr) return this->l->get(c); // caso o lado esquerdo esteja ocupado repita recursivamente
 		else {
-            c = -1;
-		   return ""; // se não estiver ocupado então chegou no dead end
+            return -1;
 		} 
 	}
 }
@@ -119,13 +126,15 @@ bool Arvore::remover(int c) {
 			else ptr_F->r = aux->r; // se não a raiz da arvore aponta para a "direita da direita" pulando uma casa
 			// transformamos a raiz no aux
 			ptr_F->chave = aux->chave;
-			ptr_F->dados = aux->dados;
 			// e deletamos o aux
 			delete aux;
 			/* note que deletar o aux não fará nenhim ponteiro se perder pois:
 			o aux teve seu pai apontando para seu imediatamente a direira e ele não tem nanhum filho a esquerda
 			*/
 		}
+		this->abaixo = 0;
+		if(this->l != nullptr) this->abaixo += this->l->abaixo+1;
+		if(this->r != nullptr) this->abaixo += this->r->abaixo+1;
 	}
 	else { // caindo aqui significa que o ponteiro a ser deletado não é a raiz da nossa arvore
 		if(ptr_F->l == nullptr && ptr_F->r == nullptr) { // nesse caso tentamos deletar o nó folha
@@ -134,6 +143,7 @@ bool Arvore::remover(int c) {
 			else ptr_P->l = nullptr;
 
 			delete ptr_F; // deletamos o filho
+			if(ptr_P == this) this->abaixo--;
 		}
 		else if(ptr_F->l == nullptr && ptr_F->r != nullptr) { // nesse caso existe subarvore a direita apenas
 			// o pai imediatamente a cima tem o ponteiro que apontava o filho agora "apontando para o unico filho de seu fiho"
@@ -142,17 +152,20 @@ bool Arvore::remover(int c) {
 
 			delete ptr_F;// e deletamos o filho a ser deletado sem risco de perder ponteiros
 			// pois sṍ avia um "filho do fiho" e esse foi salvo
+			if(ptr_P == this) this->abaixo--;
 		}
 		else if(ptr_F->l != nullptr && ptr_F->r == nullptr) { // esse caso é oposto ao anterior e se executa de forma espelhada
 			if(ptr_P->r == ptr_F) ptr_P->r = ptr_F->l;
 			else ptr_P->l = ptr_F->l;
 			delete ptr_F;
+			if(ptr_P == this) this->abaixo--;
 		}
 		else { // esse é o caso especial onde existe filhos tanto a esquerda quando a direita do elemento a ser deletado
 			Arvore *aux = ptr_F->r; // começamos apontando para o filho a direira
 			Arvore *ant_aux = nullptr; // esse ponteiro apontará para o pai do "aux"
 			// descobrimos que é o elemento mais a esquerda do elemento a direita do elemento a ser deletado
 			while(aux->l != nullptr) {
+				aux->abaixo--; // decrementando o número de elementos abaixo
 				ant_aux = aux;
 				aux = aux->l;
 			}
@@ -168,8 +181,10 @@ bool Arvore::remover(int c) {
 
  			// o elemento mais a esquerda do elemento a direita agora aponta pela esquerda para o elemento a esquerda do elemento a ser deletado
 			aux->l = ptr_F->l;
+			aux->abaixo = ptr_F->abaixo-1;
 
 			delete ptr_F; // finalmente deletamos quem deve ser deletado
+			if(ptr_P == this) this->abaixo--;
 			/* note que nenhuma subarvore se perdeu pois:
 			a subarvore a esquerda do elemento a ser deletado foi salva no elemento mais a esquerda do elemento a direita dele
 			a subarvore a direita do elemento a ser deletado foi salva a direita do elemento mais a esquerda do elemento a direita dele
@@ -196,12 +211,103 @@ void Arvore::remover_auxiliar(int c, Arvore *&ptr_P, Arvore *&ptr_F) {
 	else if(this->r != nullptr && c > this->chave) {
 		ptr_P = this;
 		this->r->remover_auxiliar(c, ptr_P, ptr_F);
+		if(ptr_F != nullptr || ptr_P != nullptr) this->abaixo--; // na volta decrementa o núkmero de laços
 	}
 	else if(this->l != nullptr && c < this->chave) {
 		ptr_P = this;
 		this->l->remover_auxiliar(c, ptr_P, ptr_F);
+		if(ptr_F != nullptr || ptr_P != nullptr) this->abaixo--;  // na volta decrementa o núkmero de laços
 	}
 	else {
 		ptr_P = ptr_F = nullptr;
 	}
 }
+
+// FUNÇÕES ADICIONAIS
+
+bool Arvore::ehCheia() {
+	if(this->l == nullptr && this->r == nullptr) return true; //caso base onde um nó é folha
+	if((this->l != nullptr && this->r == nullptr) || (this->l == nullptr && this->r != nullptr)) return false; // não é cheia
+	if(this->l->ehCheia() && this->r->ehCheia()) return true; // se tudo abaixo é cheio
+	return false; // só cai aqui se ou a arvore a esquerda ou a direita não for cheia
+}
+bool Arvore::ehCompleta() {
+	if(this->l == nullptr && this->r == nullptr) return true; //caso base onde um nó é folha
+	if((this->l != nullptr && this->r == nullptr) || (this->l == nullptr && this->r != nullptr)) {
+		if(this->l != nullptr && this->l->l == nullptr && this->l->r == nullptr) return true; // o elemento a esquerda é folha
+		if(this->r != nullptr && this->r->l == nullptr && this->r->r == nullptr) return true; // o eleento a direita é folha
+		return false; // nenhum elemento filho é folha
+	}
+	if(this->l->ehCompleta() && this->r->ehCompleta()) return true; // se tudo abaixo é completo
+	return false; // só cai aqui se ou a arvore a esquerda ou a direita não for completa
+}
+
+int Arvore::enesimoElemento (int &n) {
+	if(n > this->abaixo+1) n = -1; // se não for posível encontrar o elemento
+	return this->_enesimoElemento(n);
+}
+
+int Arvore::_enesimoElemento(int &n) {
+	int retorno;
+
+	if(this->l != nullptr && n > 1) retorno = this->l->_enesimoElemento(--n);
+
+	if(n == 1) {
+		n--;
+		retorno = this->chave;
+	}
+
+	if(this->r != nullptr && n > 1) retorno = this->r->_enesimoElemento(--n);
+
+	return retorno;
+}
+/*
+int Arvore::posicao (int x) {
+	int n = 1;
+	this->get(x);
+	if(x < 0) return -1;
+	this->_posicao(x, n);
+	return n;
+}
+
+bool Arvore::_posicao(int x, int &n) {
+	bool retorno = false;
+	std::cout << "Entrou em " << this->chave << " com " << n << std::endl;
+	if(this->l != nullptr && this->l->chave == x) {
+		n++;
+		retorno = true;
+	}
+	else if(this->l != nullptr) retorno = this->l->_posicao(x, ++n);
+
+	if(!retorno && x == this->chave) {
+		n++;
+		retorno = true;
+	}
+
+	if(!retorno && this->r != nullptr && this->r->chave == x) {
+		n++;
+		retorno = true;
+	}
+	else if(!retorno && this->r != nullptr) retorno = this->l->_posicao(x, ++n);;
+
+	return retorno;
+}
+
+std::string Arvore::toString() {
+	std::ostringstream retorno; // usando ostringstream para facilitar a formatação
+	//Arvore *esquerda = this->l;
+	//Arvore *direita = this->r;
+
+	retorno << "\n###Arvore Binária de Busca enraizada em " << this->chave << "###\n";
+	retorno << this->chave << std::endl;
+
+	retorno << "Essa arvore tem " << this->abaixo+1 << " elementos.\n";
+
+	if(this->ehCheia()) retorno << "Essa arvore é cheia.\n";
+	else retorno << "Essa arvore não é cheia.\n";
+
+	if(this->ehCompleta()) retorno << "Essa arvore é completa.\n";
+	else retorno << "Essa arvore não é completa.\n";
+
+	return retorno.str();
+}*/

@@ -35,6 +35,22 @@ Remove a partir da chave um elemento armazenado na arvore
 
 São responsávei por setar os valores iniciais e liberar a memoria alocada, respectivamente
 
+ - ehCompleta()
+
+Retorna se a arvore é completa
+
+ - eCheia()
+
+Retorna se a arvore é cheia
+
+ - enesimoElemento(int n)
+
+Retorna o enesimo elemento no percurso de ordem simétrica
+
 ##Observação...
  O código está incompleto e ainda precisa ser melhorado, versão 0.5 iniciada em 17 de setembro de 2016
- versão 1.0, falta os incrementos
+ 
+  versão 1.0, falta os incrementos
+
+  versão 1.5 funções extras adicionadas ara enesimo e descrobrir se é cheia ou completa.
+
